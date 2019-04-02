@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/message.css"/>
+		
+	</head>
+	<body>
+	<div id="showMsg" class="showMsg">
+		<ul class="list" id="ist">
+			<li v-for="(value, index) in list" class="msg">
+				<img v-bind:src="value.imgSrc" alt="" class="pic">
+				<p class="msgCont">
+					{{  value.text }}
+				</p>
+				<div class="date">
+					<p>
+						{{ value.date }}
+					</p>
+					<a 
+						href="#" 
+						class="del"
+						@click="handleDelete(index)"
+					>
+						{{ value.buttonDeleteText }}
+					</a>
+				</div>
+			</li>
+			
+		</ul>
+		<button class="btn" @click="handleSendMessage">
+			{{ btnSendMessage }}
+		</button>
+		<!-- 弹出留言框 -->
+		<div class="msg_blck" v-if="showMessageBlock">
+			<div class="msg_cont">
+				<a 
+					class="closeBtn" 
+					href="#"
+					@click="handleCloseMessageBlock"
+				>
+					{{ closeIcon }}
+				</a>
+				<textarea 
+					rows="20" 
+					cols="30" 
+					class="tarea" 
+					v-model="textareaValue"
+				>
+				</textarea>
+				<button 
+					class="confirmBtn" 
+					id="con"
+					@click="handleConfimSendMessage"
+				>
+					{{ confimSendMessage }}
+				</button>
+			</div>
+
+		</div>
+	</div>
+	
+	<script src="./js/vue.js"></script>
+	<script type="text/javascript" src="js/index.js" ></script>
+	 </script>
+	</body>
+</html>

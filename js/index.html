@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="warp">
+        <!-- 操作DOM元素进行添加数据 -->
+        {{message}}
+        <p>
+            {{ myP }}
+        </p>
+        <!-- 备注的使用 -->
+        <header v-bind:title="headerTitle">
+            {{ header }}
+        </header>
+        <!-- 条件与循环 -->
+        <nav class="myNav" v-bind:title="navMessageTitle" v-if="flag">
+            {{ navMessage }}
+        </nav>
+        <!-- 数组 -->
+        <div>
+            <ul>
+                <li v-for="(value,index) in list" :key="index">
+                    {{ value.text }}
+                </li>
+            </ul>
+        </div>
+        <!-- 添加class -->
+        <div v-bind:class="[aClass,bClass]">
+            我是class和style
+        </div>
+        <!-- 事件驱动 -->
+        <!-- 事件监听 -->
+        <!-- 双向绑定 -->
+        <!-- 计算属性 -->
+    </div>
+
+    <script src="vue.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>
