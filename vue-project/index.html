@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <!-- 页面盒子 -->
+    <div id="warp"
+        
+    >
+        {{ message }}
+        <p class="my-p">
+            {{ myPMessage }}
+        </p>
+
+        <!--  -->
+        <div class="container">
+            {{ myContainer }}
+        </div>
+        <!-- dom属性赋值 -->
+        <!-- v-bind: -->
+        <div class="my-title" v-bind:title="myTitle">
+                dom属性赋值
+        </div>
+        <!-- 条件控制 -->
+        <div class="show-box" v-if="flag">
+                条件控制
+        </div>
+        <ul>
+            <li 
+                v-for="( v, k) in list"
+                :key="k"
+                v-bind:title="k"
+            >
+                {{ k + ":" + v.value }}  
+            </li>
+        </ul>
+        <!-- class与style : 添加class-->
+        <!-- 数组语法 -->
+        <div 
+            class="my-add-class"
+            v-bind:class="[activaClass, commonClass]"
+        >
+                class与style : 添加class
+        </div>
+        <!-- 对象语法添加class -->
+        <div 
+            v-bind:class="{objectClass: flagClass}"
+        >
+            对象语法添加class
+        </div>
+
+        <!-- 事件驱动 -->
+        <!-- 事件监听器 -->
+        <div 
+            class="event-class"
+            @click="handleFunction"
+            
+        >
+                事件监听器
+                <!-- 双向数据绑定: v-model可以获取里表单元素的输入值 -->
+                <input 
+                    type="text" 
+                    v-model="inputValue" 
+                    @keyup="handleKeyUp" 
+                    @keydown="handleKeyDown"
+                > 
+                <span> {{ inputValue }} </span>
+
+                <!-- 事件冒泡 -->
+                <div 
+                    class="stop-event"
+                    @click.stop="handleChildrenClick"
+                >
+                    阻止事件冒泡
+                </div>
+        </div>
+        <!-- 计算属性 -->
+        <div class="computer-class">
+            {{ resverseMessage }}
+        </div>
+
+        <!-- 组件引入 -->
+        <my-header
+            :todo="myTitle"
+            v-on:handle-children="handleParent"
+        >
+        </my-header>
+
+        
+    </div>
+</body>
+<!-- 引入vue.js -->
+<script src="./js/vue.js"></script>
+
+
+<script type="text/javascript">
+    //  Vue是构造函数
+
+    // Vue 组件系统
+    //  实现子组件向父作用域传递数据
+    Vue.component("my-header", {
+        name: "my-header",
+        template: `
+                    <div>
+                        <div class="my-header-left">
+                            <a href="#" @click="$emit('handle-Children', childrenMessage)">登录</a>
+                            <a href="#">注册</a>
+                        </div>
+                        <div class="my-header-right">
+                            <a href="#">我的</a>
+                            <a href="#" @click="handlePropsData">查看</a>
+                        </div>
+                        <div class="my-header-props">
+                            {{ todo }} 
+                        </div>
+                    </div> 
+                `,
+        data: function () {
+            return {
+                headerMessage: "我是header组件",
+                propsData: "",
+                childrenMessage: "我是子组件的数据",
+                propsDataChildren: null
+            }
+        },
+        methods: {
+            handleLogin: function () {
+                console.log("子组件触发了");
+            },
+            handlePropsData: function () {
+                console.log(this.todo, "todo");
+                //  直接操作props数据，（也就是从父作用域传过来的数据）， 会报错。
+                // this.todo = this.headerMessage;
+                this.propsDataChildren = this.todo;
+                this.propsDataChildren = this.headerMessage;
+                console.log(this.propsDataChildren, "this.propsDataChildren");
+                
+            }
+        },
+        computed: {
+        },
+        // 严格props
+        props: {
+            todo: {
+                type: String,
+                default: ""
+            }
+        }
+    })
+
+    // 再去实例化
+    var vm = new Vue ({
+        el: "#warp", // el是管理dom节点
+        //  data管理数据
+        data: function () {
+            return {
+                message: "欢迎使用vue.js",
+                myPMessage:"我是p标签",
+                myContainer: "我是Container标签",
+                myTitle: "我是title",
+                flag: true,
+                list: [
+                    { id: 1, value: "香蕉" },
+                    { id: 2, value: "苹果"},
+                    { id: 3, value: "橘子"}
+                ],
+                activaClass: "my-common-class",
+                commonClass: "my-font-common-class",
+                flagClass: false,
+                inputValue: ""
+            }
+        },
+        // methods管理行为， 函数， 方法。
+        methods: {
+            handleFunction: function () {
+                //  this指向的通过new关键字创建下的实例
+                console.log(this);
+                console.log(this.message);
+                this.flag = !this.flag;
+
+                this.handleMyFunction();
+
+                console.log("父盒子事件触发了");
+                
+            },
+            handleMyFunction () {
+                this.message = "欢迎学习vue";
+            },
+            // keyup是键盘事件，键盘离键的时候触发
+            // keydown是键盘按下触发
+            handleKeyUp: function () {
+                console.log("我是表单按下事件")
+            },
+            handleChildrenClick: function (e) {
+                //  e是事件对象
+                // e.stopPropagation() 是阻止事件冒泡
+                // e.stopPropagation();
+                console.log("子盒子触发事件")
+            },
+            handleKeyDown: function () {
+                console.log("键盘按下事件")
+            },
+            handleParent: function (data) {
+                console.log(data, "data");
+                this.message = data;
+            }
+        },
+
+        // 计算属性: computed对象管理所有的计算属性。
+        // 计算属性是个方法， 通过return关键字返回出来重新计算结果。
+        computed: {
+            // B数据
+            resverseMessage: function () {
+                // A数据 this.message发生变化时， 
+                return this.flag;
+            }
+        },
+
+        // watch： 数据监听器, 是对象
+        watch: {
+            flag: function (oldValue, newValue) {
+                console.log(oldValue, "旧值",  newValue, "新值");
+            }            
+        },
+    });
+
+</script>
+<script>
+    class Person {
+        constructor (name, age) {
+            this.name = name;
+            this.age = age;
+        }
+
+        eat(name) {
+            console.log(this.name);
+        }
+    }
+
+    let personOne = new Person('xyh', 33);
+    personOne.eat();
+
+
+    class Animal extends Person {
+        constructor (name, age, sex) {
+            super(name, age);
+            this.sex = sex;
+        }
+
+        think () {
+            console.log(this.name, this.age, this.sex);
+        }
+    }
+
+    let animal = new Animal ('liudehua', 19, "女");
+    animal.eat();
+
+</script>
+
+</html>
